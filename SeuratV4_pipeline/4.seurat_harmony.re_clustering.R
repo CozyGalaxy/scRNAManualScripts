@@ -27,6 +27,7 @@ parser$add_argument('--blocksize',help='What proportion of cells to update durin
 
 parser$add_argument('--algorithm',help='clustering algorithm, leiden (default) or louvain')
 parser$add_argument('--findmarker',help='find marker method, wilcox (default), MAST or roc')
+parser$add_argument('--python',help='python3 bin path')
 
 args = parser$parse_args()
 dim.all <- as.numeric(if(!is.null(args$dim)) args$dim else 50)
