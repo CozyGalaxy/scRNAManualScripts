@@ -19,6 +19,7 @@ parser$add_argument("-C",'--cc_gene',help= 'input list for cell cycle genes, NUL
 parser$add_argument('-S','--sample',help = 'Sample name, also be used for slot name. There must be no replicate names for the total project')
 parser$add_argument('--algorithm',help='clustering algorithm, leiden (default) or louvain')
 parser$add_argument('--findmarker',help='find marker method, wilcox (default), MAST or roc')
+parser$add_argument('--python',help='python3 bin path')
 
 args = parser$parse_args()
 nf.usage <- as.numeric(if(!is.null(args$nf)) args$nf else 10000)
