@@ -22,6 +22,7 @@ parser$add_argument('-S','--sample',help = 'Sample name, also be used for slot n
 parser$add_argument('-P','--processor',help = 'processor number, should not be larger than 5' )
 parser$add_argument('-E','--step',help = 'step for integration, 1 for replicates of every sample, 2 for samples of the dataset, default 1')
 parser$add_argument('--algorithm',help='clustering algorithm, leiden (default) or louvain')
+parser$add_argument('--python',help='python3 bin path')
 
 args = parser$parse_args()
 args$mregex <- if(!is.null(args$mregex)) args$mregex else "Mitochondria"
