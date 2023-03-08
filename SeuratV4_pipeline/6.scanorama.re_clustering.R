@@ -31,13 +31,14 @@ args$exclude <- as.numeric(if(!is.null(args$exclude)) args$exclude else 0)
 args$transform <- if(!is.null(args$transform)) args$transform else "SCT"
 args$algorithm <- if(!is.null(args$algorithm)) args$algorithm else "leiden"
 args$findmarker <- if(!is.null(args$findmarker)) args$findmarker else "wilcox"
+args$python <- if(!is.null(args$python)) args$python else "/ldfssz1/ST_DIVERSITY/PUB/USER/zhangpei/bin/python3.7.13/bin/python3"
 
 
 library(Seurat)
 library(ggplot2)
 
 library(reticulate)
-use_python("/ldfssz1/ST_DIVERSITY/PUB/USER/zhangpei/bin/python3.7.13/bin/python3", required = T)
+use_python(args$python, required = T)
 py_config()
 scanorama <- import('scanorama')
 
