@@ -42,6 +42,7 @@ args$output <- if(!is.null(args$output)) args$output else "./"
 args$transform <- if(!is.null(args$transform)) args$transform else "SCT"
 
 args$algorithm <- if(!is.null(args$algorithm)) args$algorithm else "leiden"
+args$python <- if(!is.null(args$python)) args$python else "/ldfssz1/ST_DIVERSITY/PUB/USER/zhangpei/bin/python3.7.13/bin/python3"
 
 
 args$theta <- as.numeric(if(!is.null(args$theta)) args$theta else 2)
@@ -63,7 +64,7 @@ if(args$transform == "SCT"){
 
 if(args$algorithm == "leiden"){
 	library(reticulate)
-	use_python("/ldfssz1/ST_DIVERSITY/PUB/USER/zhangpei/bin/python3.7.13/bin/python3", required = T)
+	use_python(args$python, required = T)
 	py_config()
 	library(igraph)
 	library(leiden)
