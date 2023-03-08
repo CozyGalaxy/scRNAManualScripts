@@ -17,6 +17,7 @@ parser$add_argument("-M", '--marker',help= 'chosen marker list, NULL as default,
 parser$add_argument("-C",'--cc_gene',help= 'input list for cell cycle genes, NULL as default, 1 for cc genes provided by seurat, or should be file including gene name and type (s.genes and g2m.genes) and without header')
 parser$add_argument('-S','--sample',help = 'Sample name, also be used for slot name. There must be no replicate names for the total project')
 parser$add_argument('--algorithm',help='clustering algorithm, leiden (default) or louvain')
+parser$add_argument('--python',help='python3 bin path')
 
 
 args = parser$parse_args()
@@ -29,13 +30,14 @@ res.usage <- as.numeric(if(!is.null(args$res)) args$res else 1)
 args$out <- if(!is.null(args$out)) args$out else "./"
 args$transform <- if(!is.null(args$transform)) args$transform else "SCT"
 args$algorithm <- if(!is.null(args$algorithm)) args$algorithm else "leiden"
+args$python <- if(!is.null(args$python)) args$python else "/ldfssz1/ST_DIVERSITY/PUB/USER/zhangpei/bin/python3.7.13/bin/python3"
 
 
 library(Seurat)
 library(ggplot2)
 
 library(reticulate)
-use_python("/ldfssz1/ST_DIVERSITY/PUB/USER/zhangpei/bin/python3.7.13/bin/python3", required = T)
+use_python(args$python, required = T)
 py_config()
 scanorama <- import('scanorama')
 
