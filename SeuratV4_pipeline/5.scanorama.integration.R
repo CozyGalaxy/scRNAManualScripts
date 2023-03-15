@@ -79,8 +79,9 @@ all_rds <- SplitObject(data_merge, split.by = "temp_sample")
 
 if(args$transform == "SCT"){
     all_rds <- lapply(X = all_rds, FUN = function(x){
-		DefaultAssay(x) <- "RNA"
+	DefaultAssay(x) <- "RNA"
         x <- PercentageFeatureSet(x, pattern = args$mregex, col.name = "percent.mt")
+	x <- NormalizeData(x)
         if(!is.null(args$cc_gene)){
             x <- CellCycleScoring(x, s.features = s.genes, g2m.features = g2m.genes, assay = 'SCT', set.ident = TRUE)
             x <- SCTransform(x, method = "glmGamPoi", vars.to.regress = c('percent.mt', 'nFeature_RNA', 'nCount_RNA', 'S.Score', 'G2M.Score'), variable.features.n = nf.usage, verbose = FALSE)
@@ -90,8 +91,8 @@ if(args$transform == "SCT"){
 	})
 }else if (args$transform == "LogNormalize"){
     all_rds <- lapply(X = all_rds, FUN = function(x) {
-		DefaultAssay(x) <- "RNA"
-		x <- PercentageFeatureSet(x, pattern = args$mregex, col.name = "percent.mt")
+	DefaultAssay(x) <- "RNA"
+	x <- PercentageFeatureSet(x, pattern = args$mregex, col.name = "percent.mt")
         x <- NormalizeData(x)
         if(!is.null(args$cc_gene)){
             x <- CellCycleScoring(x, s.features = s.genes, g2m.features = g2m.genes, set.ident = TRUE)
@@ -107,6 +108,7 @@ if(args$transform == "SCT"){
 	all_rds <- lapply(X = all_rds, FUN = function(x) {
 		DefaultAssay(x) <- "RNA";
 		x <- PercentageFeatureSet(x, pattern = args$mregex, col.name = "percent.mt")
+		x <- NormalizeData(x)
 	})
 }
 
@@ -156,6 +158,11 @@ if(args$algorithm == "leiden"){
 }
 
 write.table(data_merge@meta.data,paste0(args$out,"/",args$sample,".cell_info.txt"),sep="\t", quote=FALSE)
+
+DefaultAssay(data_merge) <- "RNA"
+data_merge <- NormalizeData(data_merge)
+DefaultAssay(data_merge) <- "scanorama"
+
 saveRDS(data_merge,paste(args$out,"/",args$sample,".integrated.RDS",sep=""))
 
 p1 <- DimPlot(data_merge, reduction = "umap", label=T, raster=F)
