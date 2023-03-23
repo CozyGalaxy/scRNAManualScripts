@@ -120,6 +120,8 @@ ggsave(filename = paste0(args$output,"/", args$sample,".Umap_TSNE.orig_ident.pdf
 write.table(data_integrated@meta.data,paste0(args$output,"/", args$sample,".cell_info.txt"),sep="\t", quote=FALSE)
 saveRDS(data_integrated,paste(args$output,"/",args$sample,".integrated.RDS",sep=""))
 
+p <- VlnPlot(data_merge, features=c("nCount_RNA","nFeature_RNA"), pt.size=0, ncol=1)
+ggsave(filename = paste0(args$out, "/", args$sample, ".nFeature.vlnplot.pdf"), plot = p, device = "pdf", width = length(levels(data_merge$seurat_clusters))/4, height = 8)
 
 if(!is.null(args$marker)){
     sample_marker <- read.table(args$marker,header=F)
