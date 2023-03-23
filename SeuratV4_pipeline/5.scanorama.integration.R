@@ -178,11 +178,30 @@ p2 <- DimPlot(data_merge,  reduction = "tsne", group.by = "orig.ident")
 p <- p1|p2
 ggsave(filename = paste0(args$out, "/", args$sample, ".Umap_TSNE.orig_ident.pdf"), plot = p, device = "pdf", width = 15, height = 7)
 
+library(dplyr)
+library(ggpubr)
+cellcounts <- data_merge@meta.data %>% count(temp_sample, seurat_clusters)
+sum_sample <- cellcounts %>% group_by(temp_sample) %>% summarise(sum_sample = sum(n)) %>% as.data.frame
+sum_cluster <- cellcounts %>% group_by(seurat_clusters) %>% summarise(sum_cluster = sum(n)) %>% as.data.frame
+cellcounts <- merge(cellcounts, sum_sample, by="temp_sample")
+cellcounts$ratio_sample <- round(cellcounts$n*100/cellcounts$sum_sample, digits = 4)
+cellcounts <- merge(cellcounts, sum_cluster, by="seurat_clusters")
+cellcounts$ratio_cluster <- round(cellcounts$n*100/cellcounts$sum_cluster, digits = 4)
+
+write.table(cellcounts,paste0(args$output,"/",args$sample,".cell_number_sta.txt"),sep="\t", quote=FALSE, row.names=FALSE)
+
+plot_theme<-theme(panel.background = element_blank(),axis.line = element_line(size=0.1),axis.ticks = element_line(size=0.1),axis.text = element_text(size=7),axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1),axis.ticks.length = unit(1, "pt"),plot.title = element_text(size = 7, face = "bold",margin=margin(0,0,4,0)),plot.margin = unit(c(0,0,0,0),"cm"),legend.key.size = unit(0.1, 'cm'),legend.key.height = unit(0.1, 'cm'),legend.key.width = unit(0.1, 'cm'),legend.title = element_text(size=6),legend.text = element_text(size=6))
+
+p1 <- ggplot(cellcounts, aes(x=temp_sample, y=ratio_sample, fill=seurat_clusters))+geom_bar(stat="identity")+plot_theme
+p2 <- ggplot(cellcounts, aes(x=seurat_clusters, y=ratio_cluster, fill=temp_sample))+geom_bar(stat="identity")+plot_theme
+p <- ggarrange(p1,p2,ncol = 1)
+
+ggsave(filename = paste0(args$output, "/", args$sample, ".cell_ratio_sta.pdf"), plot = p, device = "pdf", width = 8, height = 8)
+
+			
 if(!is.null(args$marker)){
 	sample_marker <- read.table(args$marker,header=F)
 	colnames(sample_marker) = c("marker", "anno")
-	plot_theme<-theme(panel.background = element_blank(),axis.line = element_line(size=0.1),axis.ticks = element_line(size=0.1),axis.text = element_text(size=7),axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1),axis.ticks.length = unit(1, "pt"),plot.title = element_text(size = 7, face = "bold",margin=margin(0,0,4,0)),plot.margin = unit(c(0,0,0,0),"cm"),legend.key.size = unit(0.1, 'cm'),legend.key.height = unit(0.1, 'cm'),legend.key.width = unit(0.1, 'cm'),legend.title = element_text(size=6),legend.text = element_text(size=6))
-
 	dot_p <- DotPlot(data_merge, features=sample_marker$marker,cols = c("grey","red"),col.min= -0.5,dot.scale=3)+labs(x="",y="")+plot_theme
 	ggsave(filename = paste0(args$out,"/", args$sample, ".Marker.DotPlot.pdf"), plot = dot_p, device = "pdf", width = round(nrow(sample_marker)/8+2), height = 4)
 i}
