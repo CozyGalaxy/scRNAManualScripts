@@ -164,6 +164,9 @@ data_merge <- NormalizeData(data_merge)
 DefaultAssay(data_merge) <- "scanorama"
 
 saveRDS(data_merge,paste(args$out,"/",args$sample,".integrated.RDS",sep=""))
+			
+p <- VlnPlot(data_merge, features=c("nCount_RNA","nFeature_RNA"), pt.size=0, ncol=1)
+ggsave(filename = paste0(args$out, "/", args$sample, ".nFeature.vlnplot.pdf"), plot = p, device = "pdf", width = length(levels(data_merge$seurat_clusters))/4, height = 8)
 
 p1 <- DimPlot(data_merge, reduction = "umap", label=T, raster=F)
 p2 <- DimPlot(data_merge, reduction = "tsne", label=T, raster=F)
