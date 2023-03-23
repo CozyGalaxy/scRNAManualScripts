@@ -170,6 +170,9 @@ p2 <- FeaturePlot(data_integrated, "nFeature_RNA", cols=c("blue","yellow","red")
 p <- p1|p2
 ggsave(filename = paste0(args$output, "/", args$sample, ".Umap_TSNE.nfeature.pdf"), plot = p, device = "pdf", width = 15, height = 7)
 
+p <- VlnPlot(data_integrated, features=c("nCount_RNA","nFeature_RNA"), pt.size=0, ncol=1)
+ggsave(filename = paste0(args$out, "/", args$sample, ".nFeature.vlnplot.pdf"), plot = p, device = "pdf", width = length(levels(data_integrated$seurat_clusters))/4, height = 8)
+
 p1 <- DimPlot(data_integrated, reduction = "umap", group.by = "orig.ident")
 p2 <- DimPlot(data_integrated, reduction = "tsne", group.by = "orig.ident")
 p <- p1|p2
